@@ -1,0 +1,5 @@
+﻿id,name,category,price,sizes,colors,stock,image,description,visible,new,offer
+DEMO-001,Look urbano negro,Ropa,0,"S,M,L","Negro, blanco",5,assets/look-negro.jpg,Look de inspiración urbana. Completa el precio y confirma las tallas disponibles antes de publicar.,Sí,Sí,No
+DEMO-002,Look burdeos y denim,Ropa,0,"S,M,L","Burdeos, azul denim",4,assets/look-burdeos.jpg,Combinación casual con chaqueta burdeos y falda denim. Ejemplo de catálogo.,Sí,Sí,No
+DEMO-003,Look camisa blanca,Ropa,0,"S,M,L","Blanco, azul denim, marrón",3,assets/look-blanco-denim.jpg,Look casual elegante. Completa el precio y confirma la disponibilidad real.,Sí,No,No
+DEMO-004,Nuevo look,Ropa,0,"S,M,L",Consultar,2,assets/look-4.jpg,Producto de muestra. Sustituye sus datos por los reales antes de publicar.,Sí,Sí,No

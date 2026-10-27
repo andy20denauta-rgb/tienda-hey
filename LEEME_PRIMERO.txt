@@ -1,0 +1,36 @@
+# Tienda Hey! — primera versión de la web
+
+Esta carpeta contiene una primera versión funcional de prueba de la tienda: diseño adaptable a móvil y ordenador, catálogo, búsqueda, categorías, ficha de producto, selección de talla, carrito y preparación de pedido para WhatsApp.
+
+## MUY IMPORTANTE ANTES DE PUBLICAR
+- Los productos actuales son ejemplos creados para probar el diseño. Sus precios están a 0 y NO están listos para vender.
+- Falta configurar el número de WhatsApp Business y la tarifa fija real de envío.
+- No publiques la web hasta reemplazar los productos de ejemplo por información real, revisar las fotos, tallas, precios y existencias.
+- El carrito no cobra dinero. Envía una solicitud de pedido a WhatsApp.
+- La página usa `products.csv` como catálogo cuando está publicada. Puedes preparar el CSV desde Google Sheets, pero hay que configurar bien la hoja pública de catálogo y su URL. No publiques la hoja privada del inventario completo.
+
+## Archivos
+- `index.html`: la página de la tienda.
+- `products.csv`: tabla de productos de ejemplo.
+- `config.js`: configuración del número de WhatsApp, tarifa fija y ubicación del catálogo.
+- `assets/`: logo y fotos de muestra suministradas.
+
+## Cómo editar los productos sin programar (método inicial)
+1. Conserva tu inventario privado como está.
+2. Crea una hoja SEPARADA llamada por ejemplo `Catalogo público Tienda Hey!` en Google Sheets.
+3. Esa hoja solo debe tener datos que los clientes pueden ver: `id,name,category,price,sizes,colors,stock,image,description,visible,new,offer`.
+4. Cada fila de producto debe incluir un nombre de archivo o enlace de foto válido. Los productos que comparten foto pueden usar la misma imagen.
+5. Para tallas del mismo modelo, se agrupan en una sola fila en el catálogo web, por ejemplo `sizes` = `S,M,L`, siempre que los códigos de inventario indiquen que son el mismo modelo. No cambies tus códigos originales del inventario privado.
+6. La publicación de Google Sheets debe hacerse solo sobre la hoja pública, nunca sobre el archivo financiero/inventario entero.
+7. Cuando la hoja pública esté preparada, habrá que conectar su URL CSV en `config.js` (campo `catalogCsvUrl`). Esta conexión requiere un paso de configuración inicial; no basta con editar el inventario privado.
+8. Las fotos deben tener URL accesibles para los visitantes de la web. Las fotos que solo están en la galería del teléfono no se mostrarán en una web publicada hasta subirlas a un servicio de imágenes accesible o incluirlas en la carpeta del sitio.
+
+## Número de WhatsApp y tarifa
+En `config.js`:
+- `whatsappNumber`: número del negocio en formato internacional, solo dígitos, sin +, espacios ni guiones. Ejemplo ficticio: `5355555555`.
+- `shippingFeeUSD`: tarifa fija real en USD. No dejes el valor de ejemplo 0 si necesitas cobrar envío.
+
+No compartas contraseñas ni números privados de clientes en este archivo.
+
+## Vista local
+Puedes abrir `index.html` para ver el diseño, aunque algunos navegadores bloquean la lectura de `products.csv` cuando el archivo se abre directamente. La página tiene productos de demostración de respaldo. En una web alojada, el CSV se carga desde la misma carpeta o desde la URL pública configurada.
