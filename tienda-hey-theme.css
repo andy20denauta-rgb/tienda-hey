@@ -1,0 +1,31 @@
+/* TIENDA HEY! — Tema negro, oro rosado y blanco hueso */
+:root{color-scheme:dark;--ink:#f3eee8;--paper:#090909;--muted:#b9aaa0;--line:#3a2d26;--rose:#bd9270;--rose2:#dfb99a;--gold:#bd9270}
+html,body{background:#090909!important;color:#f3eee8!important}
+.announcement,.info{background:#050505!important;color:#f3eee8!important;border-color:#3a2d26!important}
+.header{background:rgba(9,9,9,.97)!important;color:#f3eee8!important;border-color:#3a2d26!important}
+.brandname,.hero h1,.section h2,.pname,.modalcontent h2,.info h3{color:#f3eee8!important}
+.brandtag,.sub,.stock,.pmeta,.footer,.info p{color:#b9aaa0!important}
+.hero,.hero-copy{background:#17120f!important}
+.hero .eyebrow{color:#dfb99a!important}
+.hero p{color:#d2c5bb!important}
+.hero-label{color:#17110d!important;background:rgba(243,238,232,.94)!important}
+.strip{color:#d5c5b9!important;background:#0d0c0b!important;border-color:#3a2d26!important}
+.section{background:#090909!important}.product{background:transparent!important}
+.photo,.modalbox img{background:#211b17!important}
+.tag{color:#17110d!important;background:#dfb99a!important;border:0!important}
+.price{color:#dfb99a!important}
+.tools input,.tools select,.modalcontent select,.modalcontent input{background:#171412!important;color:#f3eee8!important;border:1px solid #514034!important}
+.tools input::placeholder{color:#9f9187!important}
+button,.cartbtn,.darkbtn,.cta,.quick,.checkout,.qty button{background:#bd9270!important;color:#17110d!important;border:1px solid #dfb99a!important;border-radius:3px!important;font-weight:700}
+button:hover,.cartbtn:hover,.darkbtn:hover,.cta:hover,.quick:hover,.checkout:hover{background:#dfb99a!important;color:#100d0b!important}
+.nav a{color:#e9ded5!important}.nav a:hover{color:#dfb99a!important}
+.footer{background:#050505!important;border-top:1px solid #3a2d26!important}
+.overlay,.modal{background:rgba(0,0,0,.84)!important}
+.drawer,.modalbox{background:#14110f!important;color:#f3eee8!important;border:1px solid #4a382d!important}
+.drawer-head,.cartline{border-color:#3a2d26!important}
+.close{color:#dfb99a!important;background:transparent!important;border:0!important}
+.qty button{width:28px;height:28px}
+.totalrow{color:#f3eee8!important}.smallnote{color:#b9aaa0!important}
+.notice{background:#30251c!important;color:#f0d5b9!important;border:1px solid #72543e!important}
+.empty{color:#b9aaa0!important}
+@media(max-width:760px){.hero{background:#17120f!important}.hero-copy{padding:34px 22px}.quick{font-size:10px!important}.cartbtn{padding:10px 11px}}
