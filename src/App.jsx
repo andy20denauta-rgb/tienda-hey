@@ -3,9 +3,7 @@ function App() {
   return (
     <main className="site">
       <header className="header">
-        <a className="logo" href="#" aria-label="HEY! Inicio">
-          HEY!
-        </a>
+        <span className="brand-name">Tienda de moda femenina</span>
 
         <nav className="navigation" aria-label="Navegación principal">
           <a href="#inicio">Inicio</a>
@@ -36,14 +34,14 @@ function App() {
           </p>
 
           <a className="primary-button" href="#coleccion">
-            Descubrir colección
-            <span aria-hidden="true"> →</span>
+            Descubrir colección →
           </a>
         </div>
 
-        <div className="hero-visual" aria-label="Espacio para fotografía de campaña">
-          <span className="visual-label">NUEVA TEMPORADA</span>
-          <span className="visual-logo">HEY!</span>
+        <div className="hero-visual">
+          <span className="visual-label">
+            ESPACIO PARA LA FOTOGRAFÍA DE CAMPAÑA
+          </span>
         </div>
       </section>
 
@@ -57,7 +55,7 @@ function App() {
         </div>
 
         <p className="catalog-note">
-          Próximamente: catálogo de productos.
+          Catálogo de productos en preparación.
         </p>
       </section>
 
@@ -67,7 +65,7 @@ function App() {
       </section>
 
       <footer className="footer">
-        <span>HEY!</span>
+        <span>Tienda HEY!</span>
         <span>Moda femenina</span>
       </footer>
     </main>
@@ -75,3 +73,4 @@ function App() {
 }
 
 export default App
+
