@@ -1,5 +1,47 @@
 
+import { useEffect, useState } from 'react'
+import { loadCatalog } from './catalog.js'
+
 function App() {
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [catalogError, setCatalogError] = useState('')
+
+  useEffect(() => {
+    const catalogUrl = import.meta.env.VITE_CATALOG_CSV_URL
+
+    if (!catalogUrl) return
+
+    let active = true
+
+    async function getProducts() {
+      setLoading(true)
+      setCatalogError('')
+
+      try {
+        const catalog = await loadCatalog(catalogUrl)
+
+        if (active) {
+          setProducts(catalog)
+        }
+      } catch (error) {
+        if (active) {
+          setCatalogError(error.message)
+        }
+      } finally {
+        if (active) {
+          setLoading(false)
+        }
+      }
+    }
+
+    getProducts()
+
+    return () => {
+      active = false
+    }
+  }, [])
+
   return (
     <main className="site">
       <header className="header">
@@ -54,9 +96,37 @@ function App() {
           </p>
         </div>
 
-        <p className="catalog-note">
-          Catálogo de productos en preparación.
-        </p>
+        {loading && <p>Cargando colección...</p>}
+
+        {catalogError && (
+          <p role="alert">{catalogError}</p>
+        )}
+
+        {!loading && !catalogError && products.length === 0 && (
+          <p className="catalog-note">
+            Catálogo de productos en preparación.
+          </p>
+        )}
+
+        {products.length > 0 && (
+          <div className="product-list">
+            {products.map(product => (
+              <article key={product.id} className="product">
+                {product.image && (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    loading="lazy"
+                  />
+                )}
+
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <p>{product.price.toLocaleString('es')}</p>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="about" id="nosotros">
@@ -73,4 +143,3 @@ function App() {
 }
 
 export default App
-
