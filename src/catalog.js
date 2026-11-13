@@ -96,9 +96,10 @@ function normalizeProduct(product) {
     name: product.name?.trim() ?? '',
     category: product.category?.trim() ?? '',
     price: parseNumber(product.price),
+    currency: product.currency?.trim().toUpperCase() ?? '',
     sizes: parseList(product.sizes),
     colors: parseList(product.colors),
-    stock: parseNumber(product.stock),
+    available: isTrue(product.available),
     image: product.image?.trim() ?? '',
     description: product.description?.trim() ?? '',
     visible: isTrue(product.visible),
@@ -120,8 +121,9 @@ export function parseCatalog(csv) {
         product.id &&
         product.name &&
         product.visible &&
+        product.available &&
         product.price > 0 &&
-        product.stock > 0
+        ['USD', 'EUR', 'CUP'].includes(product.currency)
       )
     })
 }
