@@ -14,6 +14,7 @@ function App() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
   const [catalogError, setCatalogError] = useState('')
+  const [selections, setSelections] = useState({})
 
   useEffect(() => {
     const catalogUrl = import.meta.env.VITE_CATALOG_CSV_URL
@@ -49,6 +50,16 @@ function App() {
       active = false
     }
   }, [])
+
+  function updateSelection(productId, field, value) {
+    setSelections(previous => ({
+      ...previous,
+      [productId]: {
+        ...previous[productId],
+        [field]: value,
+      },
+    }))
+  }
 
   return (
     <main className="site">
@@ -118,23 +129,94 @@ function App() {
 
         {products.length > 0 && (
           <div className="product-list">
-            {products.map(product => (
-              <article key={product.id} className="product">
-                {product.image && (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    loading="lazy"
-                  />
-                )}
+            {products.map(product => {
+              const selection = selections[product.id] || {}
 
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <p>
-                  {formatPrice(product.price, product.currency)}
-                </p>
-              </article>
-            ))}
+              return (
+                <article key={product.id} className="product">
+                  {product.image && (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      loading="lazy"
+                    />
+                  )}
+
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+
+                  <p>
+                    {formatPrice(product.price, product.currency)}
+                  </p>
+
+                  {product.sizes.length > 0 && (
+                    <div className="product-option">
+                      <label htmlFor={`size-${product.id}`}>
+                        Talla
+                      </label>
+
+                      <select
+                        id={`size-${product.id}`}
+                        value={selection.size || ''}
+                        onChange={event =>
+                          updateSelection(
+                            product.id,
+                            'size',
+                            event.target.value
+                          )
+                        }
+                      >
+                        <option value="">Selecciona una talla</option>
+
+                        {product.sizes.map(size => (
+                          <option key={size} value={size}>
+                            {size}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {product.colors.length > 0 && (
+                    <div className="product-option">
+                      <label htmlFor={`color-${product.id}`}>
+                        Color
+                      </label>
+
+                      <select
+                        id={`color-${product.id}`}
+                        value={selection.color || ''}
+                        onChange={event =>
+                          updateSelection(
+                            product.id,
+                            'color',
+                            event.target.value
+                          )
+                        }
+                      >
+                        <option value="">Selecciona un color</option>
+
+                        {product.colors.map(color => (
+                          <option key={color} value={color}>
+                            {color}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <p className="selection-summary">
+                    {selection.size
+                      ? `Talla: ${selection.size}`
+                      : 'Talla sin seleccionar'}
+                    {' · '}
+                    {selection.color
+                      ? `Color: ${selection.color}`
+                      : 'Color sin seleccionar'}
+                  </p>
+                </article>
+              )
+            })}
           </div>
         )}
       </section>
@@ -153,3 +235,4 @@ function App() {
 }
 
 export default App
+
