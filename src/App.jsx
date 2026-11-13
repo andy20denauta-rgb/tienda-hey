@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 import { loadCatalog } from './catalog.js'
 
+const WHATSAPP_NUMBER = '5358420732'
+
 function formatPrice(price, currency) {
   return new Intl.NumberFormat('es', {
     style: 'currency',
@@ -30,17 +32,11 @@ function App() {
       try {
         const catalog = await loadCatalog(catalogUrl)
 
-        if (active) {
-          setProducts(catalog)
-        }
+        if (active) setProducts(catalog)
       } catch (error) {
-        if (active) {
-          setCatalogError(error.message)
-        }
+        if (active) setCatalogError(error.message)
       } finally {
-        if (active) {
-          setLoading(false)
-        }
+        if (active) setLoading(false)
       }
     }
 
@@ -59,6 +55,21 @@ function App() {
         [field]: value,
       },
     }))
+  }
+
+  function createWhatsAppLink(product, selection) {
+    const message = [
+      '¡Hola, Tienda HEY! Quiero consultar este producto:',
+      '',
+      `Producto: ${product.name}`,
+      `Precio: ${formatPrice(product.price, product.currency)}`,
+      `Talla: ${selection.size || 'No especificada'}`,
+      `Color: ${selection.color || 'No especificado'}`,
+      '',
+      '¿Podrían confirmarme su disponibilidad?',
+    ].join('\n')
+
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
   }
 
   return (
@@ -214,6 +225,15 @@ function App() {
                       ? `Color: ${selection.color}`
                       : 'Color sin seleccionar'}
                   </p>
+
+                  <a
+                    className="primary-button"
+                    href={createWhatsAppLink(product, selection)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Pedir por WhatsApp
+                  </a>
                 </article>
               )
             })}
@@ -235,4 +255,3 @@ function App() {
 }
 
 export default App
-
