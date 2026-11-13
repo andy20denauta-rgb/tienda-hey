@@ -2,6 +2,14 @@
 import { useEffect, useState } from 'react'
 import { loadCatalog } from './catalog.js'
 
+function formatPrice(price, currency) {
+  return new Intl.NumberFormat('es', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 2,
+  }).format(price)
+}
+
 function App() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
@@ -122,7 +130,9 @@ function App() {
 
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
-                <p>{product.price.toLocaleString('es')}</p>
+                <p>
+                  {formatPrice(product.price, product.currency)}
+                </p>
               </article>
             ))}
           </div>
