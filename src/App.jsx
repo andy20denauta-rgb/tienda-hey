@@ -17,6 +17,8 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [catalogError, setCatalogError] = useState('')
   const [selections, setSelections] = useState({})
+  const [cart, setCart] = useState([])
+  const [cartMessage, setCartMessage] = useState('')
 
   useEffect(() => {
     const catalogUrl = import.meta.env.VITE_CATALOG_CSV_URL
@@ -31,7 +33,6 @@ function App() {
 
       try {
         const catalog = await loadCatalog(catalogUrl)
-
         if (active) setProducts(catalog)
       } catch (error) {
         if (active) setCatalogError(error.message)
@@ -57,20 +58,106 @@ function App() {
     }))
   }
 
-  function createWhatsAppLink(product, selection) {
+  function addToCart(product, selection) {
+    if (product.sizes.length > 0 && !selection.size) {
+      setCartMessage(`Selecciona la talla de ${product.name}.`)
+      return
+    }
+
+    if (product.colors.length > 0 && !selection.color) {
+      setCartMessage(`Selecciona el color de ${product.name}.`)
+      return
+    }
+
+    const existingKey = `${product.id}|${selection.size || ''}|${selection.color || ''}`
+
+    setCart(previous => {
+      const existing = previous.find(item => item.key === existingKey)
+
+      if (existing) {
+        return previous.map(item =>
+          item.key === existingKey
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      }
+
+      return [
+        ...previous,
+        {
+          key: existingKey,
+          product,
+          size: selection.size || '',
+          color: selection.color || '',
+          quantity: 1,
+        },
+      ]
+    })
+
+    setCartMessage(`${product.name} se añadió al carrito.`)
+  }
+
+  function changeQuantity(key, amount) {
+    setCart(previous =>
+      previous
+        .map(item =>
+          item.key === key
+            ? { ...item, quantity: item.quantity + amount }
+            : item
+        )
+        .filter(item => item.quantity > 0)
+    )
+  }
+
+  function removeFromCart(key) {
+    setCart(previous => previous.filter(item => item.key !== key))
+  }
+
+  function createCartWhatsAppLink() {
+    const totals = {}
+
+    cart.forEach(item => {
+      const currency = item.product.currency
+      totals[currency] =
+        (totals[currency] || 0) +
+        item.product.price * item.quantity
+    })
+
     const message = [
-      '¡Hola, Tienda HEY! Quiero consultar este producto:',
+      '¡Hola, Tienda HEY! Quiero realizar este pedido:',
       '',
-      `Producto: ${product.name}`,
-      `Precio: ${formatPrice(product.price, product.currency)}`,
-      `Talla: ${selection.size || 'No especificada'}`,
-      `Color: ${selection.color || 'No especificado'}`,
+      ...cart.flatMap((item, index) => [
+        `${index + 1}. ${item.product.name}`,
+        `Cantidad: ${item.quantity}`,
+        `Precio unitario: ${formatPrice(item.product.price, item.product.currency)}`,
+        `Talla: ${item.size || 'No especificada'}`,
+        `Color: ${item.color || 'No especificado'}`,
+        `Subtotal: ${formatPrice(item.product.price * item.quantity, item.product.currency)}`,
+        '',
+      ]),
+      'RESUMEN:',
+      ...Object.entries(totals).map(([currency, total]) =>
+        `Total en ${currency}: ${formatPrice(total, currency)}`
+      ),
       '',
-      '¿Podrían confirmarme su disponibilidad?',
+      '¿Podrían confirmarme la disponibilidad de estos productos?',
     ].join('\n')
 
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
   }
+
+  const cartCount = cart.reduce(
+    (total, item) => total + item.quantity,
+    0
+  )
+
+  const cartTotals = cart.reduce((totals, item) => {
+    const currency = item.product.currency
+    totals[currency] =
+      (totals[currency] || 0) +
+      item.product.price * item.quantity
+    return totals
+  }, {})
 
   return (
     <main className="site">
@@ -83,8 +170,8 @@ function App() {
           <a href="#nosotros">Nosotros</a>
         </nav>
 
-        <a className="header-cta" href="#coleccion">
-          Ver colección
+        <a className="header-cta" href="#carrito">
+          Carrito ({cartCount})
         </a>
       </header>
 
@@ -226,18 +313,105 @@ function App() {
                       : 'Color sin seleccionar'}
                   </p>
 
-                  <a
+                  <button
+                    type="button"
                     className="primary-button"
-                    href={createWhatsAppLink(product, selection)}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    onClick={() => addToCart(product, selection)}
                   >
-                    Pedir por WhatsApp
-                  </a>
+                    Añadir al carrito
+                  </button>
                 </article>
               )
             })}
           </div>
+        )}
+
+        {cartMessage && (
+          <p role="status">{cartMessage}</p>
+        )}
+      </section>
+
+      <section className="collection" id="carrito">
+        <span className="eyebrow">TU SELECCIÓN</span>
+        <h2>Mi carrito ({cartCount})</h2>
+
+        {cart.length === 0 ? (
+          <p className="catalog-note">
+            Todavía no has añadido productos.
+          </p>
+        ) : (
+          <>
+            <div className="product-list">
+              {cart.map(item => (
+                <article className="product" key={item.key}>
+                  <h3>{item.product.name}</h3>
+
+                  <p>
+                    {formatPrice(
+                      item.product.price,
+                      item.product.currency
+                    )}
+                  </p>
+
+                  <p>
+                    Talla: {item.size || 'No especificada'}
+                    {' · '}
+                    Color: {item.color || 'No especificado'}
+                  </p>
+
+                  <p>
+                    Cantidad: {item.quantity}
+                  </p>
+
+                  <p>
+                    Subtotal:{' '}
+                    {formatPrice(
+                      item.product.price * item.quantity,
+                      item.product.currency
+                    )}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => changeQuantity(item.key, -1)}
+                  >
+                    −
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => changeQuantity(item.key, 1)}
+                  >
+                    +
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => removeFromCart(item.key)}
+                  >
+                    Eliminar
+                  </button>
+                </article>
+              ))}
+            </div>
+
+            <h3>Resumen del pedido</h3>
+
+            {Object.entries(cartTotals).map(([currency, total]) => (
+              <p key={currency}>
+                Total en {currency}: {formatPrice(total, currency)}
+              </p>
+            ))}
+
+            <a
+              className="primary-button"
+              href={createCartWhatsAppLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Enviar pedido por WhatsApp
+            </a>
+          </>
         )}
       </section>
 
